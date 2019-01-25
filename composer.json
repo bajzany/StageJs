@@ -1,9 +1,9 @@
 {
-  "name": "bajzany/stagejs",
+  "name": "bajzany/StageJs",
   "type": "extensions",
   "description": "Js Control for Nette Framework",
   "keywords": ["js", "control"],
-  "homepage": "https://github.com/bajzany/stagejs",
+  "homepage": "https://github.com/bajzany/StageJs",
   "license": [],
   "authors": [
     {
@@ -14,7 +14,7 @@
   ],
   "support": {
     "email": "radek.zika@dipcom.cz",
-    "issues": "https://github.com/bajzany/stagejs"
+    "issues": "https://github.com/bajzany/StageJs"
   },
   "require": {
     "php": "^7.2",
