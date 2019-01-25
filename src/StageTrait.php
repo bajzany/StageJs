@@ -7,6 +7,9 @@
 
 namespace Bajzany\StageJs;
 
+/**
+ * Trait StageTrait
+ */
 trait StageTrait
 {
 
@@ -21,6 +24,15 @@ trait StageTrait
 	public function createComponentStageJs()
 	{
 		return $this->stageControl->create();
+	}
+
+	protected function afterRender()
+	{
+		parent::afterRender();
+
+		if (!empty((array)$this->payload)) {
+			$this->sendPayload();
+		}
 	}
 
 }

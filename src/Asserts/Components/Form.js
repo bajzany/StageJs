@@ -11,13 +11,20 @@
 		],
 		spanErrorClass: 'help-block',
 		divErrorClass: 'has-error',
-	}, local = {};
+	}, local = {
+		state: {
+			validated: false
+		}
+	};
 
 	Stage.Form = Form;
 	Stage.addComponent('Form', Form);
 
 	Form.init = function() {
 		$("form").each(function() {
+			var form = this;
+
+			// INPUT LISTENER ON EVENTS
 			$(this).find(':input').each(function () {
 				var input = this;
 				if ($.inArray($(this).prop('name'), Form.unusedField) < 0) {
@@ -25,7 +32,24 @@
 				}
 			});
 
-			Form.forms.push(this);
+			// AJAX CHECK SUBMIT IF VALID SEND CLASSIC SUBMIT
+			$(this).find(':button[type=submit][name=send]').each(function () {
+				var timeout;
+				$(this).on('click', function(e){
+					e.preventDefault();
+					local.removeErrors($(form));
+					local.validateForm($(form));
+					clearTimeout(timeout);
+					timeout = setTimeout(function(){
+						if (!local.hasHtmlErrors($(form))) {
+							$(form).submit();
+						}
+					},200);
+				});
+			});
+
+
+			Form.forms.push(form);
 		});
 	};
 
@@ -37,22 +61,39 @@
 		// DEFAULT EVENT
 		var timeout;
 		$(element).on('keydown', function () {
+			if (local.state.validated) {
+				local.state.validated = false;
+				return;
+			}
+			var fieldName = $(this)[0].name;
+
 			var form = $(this).closest("form");
-			if (local.hasHtmlErrors(form, $(this)[0].name)) {
+			if (local.hasHtmlErrors(form, fieldName)) {
 				clearTimeout(timeout);
 				timeout = setTimeout(function(){
-					local.removeErrors(form, $(this)[0].name);
-					local.validateForm(form, $(this)[0].name);
-				},500);
+
+					local.removeErrors(form, fieldName);
+					local.validateForm(form, fieldName);
+
+					local.state.validated = true;
+				},1000);
 			}
 		});
 
 		// OWN EVENTS
 		$.each(Form.validateEvents ,function (i, event) {
 			$(element).on(event, function () {
+				if (local.state.validated) {
+					return;
+				}
+
+				var fieldName = $(this)[0].name;
 				var form = $(this).closest("form");
-				local.removeErrors(form, $(this)[0].name);
-				local.validateForm(form, $(this)[0].name);
+
+				local.removeErrors(form, fieldName);
+				local.validateForm(form, fieldName);
+
+				local.state.validated = true;
 			})
 		})
 	};
@@ -99,32 +140,40 @@
 
 	/**
 	 * @param {jQuery} form
-	 * @param {string} fieldName
+	 * @param {string} selectedFieldName
 	 */
-	local.validateForm = function (form, fieldName) {
+	local.validateForm = function (form, selectedFieldName) {
 		new Stage.Ajax({
 			type: 'POST',
-			url: form[0].action + '&validate=1',
-			data: form.serialize(),
+			url: form[0].action ,
+			data: form.serialize() + '&_validate=1',
 			onSuccess: function (data) {
-
-				if (!data.formErrors) {
+				var forms = data.formsValidation;
+				if (!forms) {
 					return;
 				}
 
-				// VALIDATE ONLY ONE FIELD
-				if (fieldName) {
-					var errors = data.formErrors[fieldName];
-					if (errors && errors.length) {
-						local.validateField(form, fieldName, errors);
-					}
+				$.each(forms, function (i, form) {
 
-				// VALIDATE ALL FIELDS
-				} else {
-					$.each(data.formErrors, function (field, errors) {
-						local.validateField(form, field, errors);
-					});
-				}
+					var htmlForm = $('form[id = '+form.id+']');
+
+					// VALIDATE ALL FIELDS
+					$.each(form.fields, function (i, field) {
+
+						var fieldName = field.htmlName;
+						var errors = field.errors;
+
+						// VALIDATE ONLY ONE FIELD
+						if (selectedFieldName) {
+							if (selectedFieldName === fieldName) {
+								local.validateField(htmlForm, fieldName, errors);
+							}
+						} else {
+							// VALIDATE ALL FIELDS
+							local.validateField(htmlForm, fieldName, errors);
+						}
+					})
+				});
 			}
 		});
 	};
@@ -141,7 +190,7 @@
 		$.each(errors, function (i, error) {
 			var spanError = document.createElement('span');
 			spanError.setAttribute('class', Form.spanErrorClass);
-			spanError.innerText = error;
+			spanError.innerHTML = error;
 			input.after($(spanError));
 		});
 	}

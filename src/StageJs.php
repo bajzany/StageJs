@@ -21,7 +21,6 @@ class StageJs
 		__DIR__ . '/Asserts/Ajax.js',
 		__DIR__ . '/Asserts/Components/Form.js',
 		__DIR__ . '/Asserts/Extensions/Application.js',
-		__DIR__ . '/Asserts/Controls/OAuth.js',
 	];
 
 	/**
