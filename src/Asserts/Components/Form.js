@@ -33,7 +33,7 @@
 			});
 
 			// AJAX CHECK SUBMIT IF VALID SEND CLASSIC SUBMIT
-			$(this).find(':button[type=submit][name=send]').each(function () {
+			$(this).find(':button[type=submit].ajaxValidation').each(function () {
 				var timeout;
 				$(this).on('click', function(e){
 					e.preventDefault();
