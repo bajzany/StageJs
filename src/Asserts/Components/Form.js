@@ -72,8 +72,12 @@
 				clearTimeout(timeout);
 				timeout = setTimeout(function(){
 
-					local.removeErrors(form, fieldName);
-					local.validateForm(form, fieldName);
+					// FOR ONLY ONE FIELD IN VALIDATION
+					// local.removeErrors(form, fieldName);
+					// local.validateForm(form, fieldName);
+
+					local.removeErrors(form);
+					local.validateForm(form);
 
 					local.state.validated = true;
 				},1000);
@@ -87,11 +91,16 @@
 					return;
 				}
 
-				var fieldName = $(this)[0].name;
+
 				var form = $(this).closest("form");
 
-				local.removeErrors(form, fieldName);
-				local.validateForm(form, fieldName);
+				// FOR ONLY ONE FIELD IN VALIDATION
+				// var fieldName = $(this)[0].name;
+				// local.removeErrors(form, fieldName);
+				// local.validateForm(form, fieldName);
+
+				local.removeErrors(form);
+				local.validateForm(form);
 
 				local.state.validated = true;
 			})
