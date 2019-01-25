@@ -5,7 +5,7 @@
  * Email: radek.zika@alistra.cz
  */
 
-namespace bajzany\StageJs\DI;
+namespace Bajzany\StageJs\DI;
 
 use Bajzany\StageJs\IStageJsControl;
 use Bajzany\StageJs\StageJs;
