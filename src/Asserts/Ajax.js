@@ -6,6 +6,17 @@
 			ajax_load_timeout: 300,
 		};
 
+		this.snippets = {
+			TYPE_DEFAULT: {
+				snippetPrefix: undefined,
+				snippets: {}
+			},
+			TYPE_ADD: {
+				snippetPrefix: 'add',
+				snippets: {}
+			},
+		};
+
 		var the = this;
 		var local = {};
 		local.state = {
@@ -50,10 +61,23 @@
 			if (data.snippets)
 			{
 				defaults.beforeRedraw(data.snippets);
-
 				$.each(data.snippets, function(name, data){
-					var result = $(document).find('#' + name).html(data);
+					var notDefault = false;
+					$.each(the.snippets, function (type, config) {
+						var search = name.search('snippet--' + config.snippetPrefix);
+						if (search > -1) {
+							notDefault = true;
+							the.snippets[type].snippets[name] = data
+						}
+					});
+
+					if (!notDefault) {
+						the.snippets.TYPE_DEFAULT.snippets[name] = data
+					}
 				});
+
+				defaults.beforeExecuteSnippets(the.snippets);
+				local.executeSnippets();
 
 				defaults.afterRedraw(data.snippets);
 			}
@@ -61,6 +85,18 @@
 			local.state.inProgress = false;
 			defaults.inProcess(local.state);
 
+		};
+
+		local.executeSnippets = function() {
+			//TYPE DEFAULT
+			$.each(the.snippets.TYPE_DEFAULT.snippets, function (name, data) {
+				$(document).find('#' + name).html(data);
+			});
+
+			//TYPE ADD
+			$.each(the.snippets.TYPE_ADD.snippets, function (name, data) {
+				$(document).find('#' + name).append(data);
+			});
 		};
 
 
@@ -71,7 +107,7 @@
 		 */
 		local.error = function(request, ajaxOptions, thrownError){
 			defaults.onError(request, ajaxOptions, thrownError);
-			console.error('AJAX - Element ', _call_el, ' has: ', ajaxOptions)
+			console.error('AJAX - Element ', _call_el, ' has: ', ajaxOptions);
 			local.state.inProgress = false;
 			defaults.inProcess(local.state);
 		};
@@ -87,6 +123,7 @@
 			defaults.onAjax = function(){};
 			defaults.onSuccess = function(){};
 			defaults.onError = function(){};
+			defaults.beforeExecuteSnippets = function (){};
 			defaults.beforeRedraw = function (){};
 			defaults.afterRedraw = function(){};
 			defaults.inProcess = local.inProcess;
