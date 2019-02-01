@@ -30,6 +30,10 @@ trait StageTrait
 	{
 		parent::afterRender();
 
+		if ($this->isAjax()) {
+			$this->redrawControl('modal-Area');
+		}
+
 		if (!empty((array)$this->payload)) {
 			$this->sendPayload();
 		}

@@ -17,10 +17,12 @@
 		}
 	};
 
-	Stage.Form = Form;
-	Stage.addComponent('Form', Form);
+	// Stage.Form = Form;
+	Stage.App.addComponent('Form', Form);
 
-	Form.init = function() {
+
+	Form.init = function(App) {
+
 		$("form").each(function() {
 			var form = this;
 
@@ -53,6 +55,8 @@
 		});
 	};
 
+	Stage.App.addActionAfterExecuteSnippet('Form', Form.init);
+
 	/**
 	 * @param {jQuery} element
 	 */
@@ -73,11 +77,11 @@
 				timeout = setTimeout(function(){
 
 					// FOR ONLY ONE FIELD IN VALIDATION
-					// local.removeErrors(form, fieldName);
-					// local.validateForm(form, fieldName);
+					local.removeErrors(form, fieldName);
+					local.validateForm(form, fieldName);
 
-					local.removeErrors(form);
-					local.validateForm(form);
+					// local.removeErrors(form);
+					// local.validateForm(form);
 
 					local.state.validated = true;
 				},1000);
@@ -87,20 +91,19 @@
 		// OWN EVENTS
 		$.each(Form.validateEvents ,function (i, event) {
 			$(element).on(event, function () {
-				if (local.state.validated) {
-					return;
-				}
-
+				// if (local.state.validated) {
+				// 	return;
+				// }
 
 				var form = $(this).closest("form");
 
 				// FOR ONLY ONE FIELD IN VALIDATION
-				// var fieldName = $(this)[0].name;
-				// local.removeErrors(form, fieldName);
-				// local.validateForm(form, fieldName);
+				var fieldName = $(this)[0].name;
+				local.removeErrors(form, fieldName);
+				local.validateForm(form, fieldName);
 
-				local.removeErrors(form);
-				local.validateForm(form);
+				// local.removeErrors(form);
+				// local.validateForm(form);
 
 				local.state.validated = true;
 			})

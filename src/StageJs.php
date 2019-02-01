@@ -19,8 +19,10 @@ class StageJs
 	private $asserts = [
 		__DIR__ . '/Asserts/Stage.js',
 		__DIR__ . '/Asserts/Ajax.js',
-		__DIR__ . '/Asserts/Components/Form.js',
-		__DIR__ . '/Asserts/Extensions/Application.js',
+		__DIR__ . '/Asserts/Extensions/App/Application.js',
+		__DIR__ . '/Asserts/Extensions/App/Listeners/AjaxListener.js',
+		__DIR__ . '/Asserts/Extensions/App/Components/Modal.js',
+		__DIR__ . '/Asserts/Extensions/App/Components/Form.js',
 	];
 
 	/**

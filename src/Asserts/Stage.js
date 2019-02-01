@@ -2,7 +2,6 @@
     var Stage = {};
     window.Stage = Stage;
     Stage.version = '1.0';
-    Stage.components = {};
     Stage.extensions = {};
     Stage.Parameters = {};
 
@@ -28,24 +27,6 @@
             return;
         }
         Stage.extensions[name] = extension;
-    };
-
-
-    /**
-     * @param name
-     * @param component
-     */
-    Stage.addComponent = function(name, component){
-
-        if(typeof Stage.components[name] !== "undefined"){
-            console.error("Extension "+name+" exist");
-            return;
-        }
-        if(typeof component !== "object"){
-            console.error("TODO");
-            return;
-        }
-        Stage.components[name] = component;
     };
 
     Stage.getExtensionByName = function (name) {
@@ -74,13 +55,6 @@
      * INIT METHODS
      */
     Stage.init = function() {
-
-        $.each(Stage.components, function (i, component) {
-            if(typeof component.init === "function"){
-                component.init(Stage);
-            }
-        });
-
         $.each(Stage.extensions, function (i, extension) {
             if(typeof extension.init === "function"){
                 extension.init(Stage);

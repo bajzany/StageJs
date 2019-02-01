@@ -11,11 +11,17 @@
 				snippetPrefix: undefined,
 				snippets: {}
 			},
+			TYPE_MODAL: {
+				snippetPrefix: 'modal',
+				snippets: {}
+			},
 			TYPE_ADD: {
 				snippetPrefix: 'add',
 				snippets: {}
 			},
 		};
+
+		this.executedSnippets = {};
 
 		var the = this;
 		var local = {};
@@ -62,16 +68,17 @@
 			{
 				defaults.beforeRedraw(data.snippets);
 				$.each(data.snippets, function(name, data){
-					var notDefault = false;
+					var find = false;
 					$.each(the.snippets, function (type, config) {
 						var search = name.search('snippet--' + config.snippetPrefix);
 						if (search > -1) {
-							notDefault = true;
+							find = true;
 							the.snippets[type].snippets[name] = data
 						}
 					});
 
-					if (!notDefault) {
+					// NASTAVI SNIPPET JAKO DEFAULT POKUD NENAJDE PREFIX
+					if (!find) {
 						the.snippets.TYPE_DEFAULT.snippets[name] = data
 					}
 				});
@@ -79,7 +86,12 @@
 				defaults.beforeExecuteSnippets(the.snippets);
 				local.executeSnippets();
 
-				defaults.afterRedraw(data.snippets);
+				// ACTIONS AFTER EXECUTE SNIPPETS
+				$.each(defaults.actionsAfterExecuteSnippets, function (name, action) {
+					action(the);
+				});
+
+				defaults.afterExecuteSnippets(the.executedSnippets);
 			}
 
 			local.state.inProgress = false;
@@ -87,18 +99,49 @@
 
 		};
 
+		/**
+		 * EXECUTE SNIPPETS (RENDER)
+		 */
 		local.executeSnippets = function() {
+
 			//TYPE DEFAULT
 			$.each(the.snippets.TYPE_DEFAULT.snippets, function (name, data) {
-				$(document).find('#' + name).html(data);
+				var res = $(document).find('#' + name).html(data);
+				local.addExecutedSnippet(name, res);
+			});
+
+			//TYPE MODAL
+			$.each(the.snippets.TYPE_MODAL.snippets, function (name, data) {
+				var res;
+				var source = $(document).find('#' + name);
+				var sourceModalContent = source.find('.modal-dialog');
+
+				if (sourceModalContent.length > 0) {
+					var snippetElement = $(data);
+					var modalContent = snippetElement.find('.modal-dialog');
+
+					res = sourceModalContent.html(modalContent);
+				} else {
+					res = source.html(data);
+				}
+
+				local.addExecutedSnippet(name, res);
 			});
 
 			//TYPE ADD
 			$.each(the.snippets.TYPE_ADD.snippets, function (name, data) {
-				$(document).find('#' + name).append(data);
+				var res = $(document).find('#' + name).append(data);
+				local.addExecutedSnippet(name, res);
 			});
 		};
 
+		/**
+		 * @param {string} name
+		 * @param {jQuery} data
+		 */
+		local.addExecutedSnippet = function(name, data) {
+			the.executedSnippets[name] = data
+		};
 
 		/**
 		 * @param request
@@ -120,12 +163,13 @@
 			defaults.data = false;
 			defaults.async = true;
 			defaults.success = local.success;
-			defaults.onAjax = function(){};
+			defaults.onAjax = [];
 			defaults.onSuccess = function(){};
 			defaults.onError = function(){};
 			defaults.beforeExecuteSnippets = function (){};
+			defaults.afterExecuteSnippets = function (){};
 			defaults.beforeRedraw = function (){};
-			defaults.afterRedraw = function(){};
+			defaults.actionsAfterExecuteSnippets = [];
 			defaults.inProcess = local.inProcess;
 			defaults.error = local.error;
 
@@ -134,10 +178,14 @@
 			if (defaults.url.length !== 0 || defaults.handle.length !== 0) {
 				local.state.inProgress = true;
 				defaults.inProcess(local.state);
-				defaults.onAjax(defaults);
+
+				// ON AJAX ACTIONS
+				$.each(defaults.onAjax, function (name, action) {
+					action(defaults);
+				});
+
 				$.ajax(defaults);
 			}
-
 
 		})(options);
 
@@ -147,55 +195,5 @@
 		this.getConfig = function () {
 			return the.Config;
 		};
-
-		/**
-		 * @param {jQuery} el
-		 * @param {*} option
-		 * @param {Event} e
-		 */
-		this.runAjaxFromElement = function (el, option, e) {
-			e.preventDefault();
-			var url = the.createUrlFromElement(el);
-			option.url = url.toString();
-			return new Stage.Ajax(option, el);
-
-		};
-
-
-		/**
-		 * @param element
-		 * @return {URL|void}
-		 */
-		this.createUrlFromElement = function (element) {
-
-			var url_string = '';
-			if( element instanceof jQuery){
-				if(element.length > 0 && element.is('a')){
-					url_string = element.attr('href');
-				}else{
-					return console.error('jquery object is emty or not select <A> link');
-				}
-			}else if(!element){
-				url_string = document.URL;
-			}
-
-			url_string = the.validateUrl(url_string);
-
-			return new URL(url_string);
-		};
-
-
-		this.validateUrl = function (url_string) {
-			var pat = /^https?:\/\//i;
-			if (!pat.test(url_string))
-			{
-				var a = document.createElement('a');
-				a.href = url_string;
-				url_string = a.href;
-			}
-
-			return url_string;
-		}
 	};
-
 })();
