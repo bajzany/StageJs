@@ -31,6 +31,10 @@ trait StageTrait
 		parent::afterRender();
 
 		if ($this->isAjax()) {
+			if (!empty($this->notifications->getNotifications())) {
+				$this->redrawControl('notitify');
+			}
+
 			$this->redrawControl('modal-Area');
 		}
 

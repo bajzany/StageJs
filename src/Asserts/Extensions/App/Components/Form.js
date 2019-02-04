@@ -44,7 +44,11 @@
 					clearTimeout(timeout);
 					timeout = setTimeout(function(){
 						if (!local.hasHtmlErrors($(form))) {
-							$(form).submit();
+							new Stage.Ajax({
+								type: 'POST',
+								url: $(form)[0].action,
+								data: $(form).serialize(),
+							});
 						}
 					},200);
 				});
