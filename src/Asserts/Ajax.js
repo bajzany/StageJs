@@ -36,22 +36,22 @@
 		 */
 		local.inProcess = function(state) {
 
-			var body = $("body");
-			var loader = body.find('#loader');
-
-			if (loader.length === 0) {
-				loader = document.createElement('div');
-				loader.setAttribute('id','loader');
-				loader.setAttribute('class','hidden');
-				loader = $(loader);
-				body.prepend(loader);
-			}
-
-			if (state.inProgress) {
-				loader.removeClass('hidden');
-			} else {
-				loader.addClass('hidden');
-			}
+			// var body = $("body");
+			// var loader = body.find('#loader');
+			//
+			// if (loader.length === 0) {
+			// 	loader = document.createElement('div');
+			// 	loader.setAttribute('id','loader');
+			// 	loader.setAttribute('class','hidden');
+			// 	loader = $(loader);
+			// 	body.prepend(loader);
+			// }
+			//
+			// if (state.inProgress) {
+			// 	loader.removeClass('hidden');
+			// } else {
+			// 	loader.addClass('hidden');
+			// }
 
 		};
 
