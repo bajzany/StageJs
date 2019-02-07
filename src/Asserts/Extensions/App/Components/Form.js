@@ -21,9 +21,9 @@
 	Stage.App.addComponent('Form', Form);
 
 
-	Form.init = function(App) {
+	Form.init = function(App, el) {
 
-		$("form").each(function() {
+		$(el ? el :document).find("form").each(function() {
 			var form = this;
 
 			// INPUT LISTENER ON EVENTS

@@ -13,7 +13,7 @@
 			actionsAfterExecuteSnippets: [
 				function (Ajax){
 					$.each(App.actionsAfterExecuteSnippets, function (name, action) {
-						action(Ajax);
+						action(Ajax, element);
 					});
 				},
 				function(Ajax) {
@@ -25,7 +25,7 @@
 			onAjax: [
 				function (Ajax) {
 					$.each(App.actionsOnAjax, function (name, action) {
-						action(Ajax);
+						action(Ajax, element);
 					});
 				}
 			]
