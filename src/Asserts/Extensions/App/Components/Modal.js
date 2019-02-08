@@ -15,10 +15,14 @@
 
 	this.initializeModal = function () {
 		if (typeof document.modalId !== "undefined") {
-			$('#' + document.modalId).modal("show");
+			var modal = $('#' + document.modalId)
+			modal.modal("show");
+
+			modal.on("hidden.bs.modal", function () {
+				$(this).remove();
+			});
+
 		}
 	};
-
-
 
 })();
