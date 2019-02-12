@@ -82,6 +82,23 @@
         return new newObject(Stage);
     };
 
+
+    /**
+     * @param {string} url_string
+     * @return {*}
+     */
+    Stage.validateUrl = function (url_string) {
+        var pat = /^https?:\/\//i;
+        if (!pat.test(url_string))
+        {
+            var a = document.createElement('a');
+            a.href = url_string;
+            url_string = a.href;
+        }
+
+        return url_string;
+    }
+
 })();
 
 

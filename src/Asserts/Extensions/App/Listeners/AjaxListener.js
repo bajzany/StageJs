@@ -93,25 +93,11 @@
 			url_string = document.URL;
 		}
 
-		url_string = the.validateUrl(url_string);
+		url_string = Stage.validateUrl(url_string);
 
 		return new URL(url_string);
 	};
 
-	/**
-	 * @param {string} url_string
-	 * @return {*}
-	 */
-	this.validateUrl = function (url_string) {
-		var pat = /^https?:\/\//i;
-		if (!pat.test(url_string))
-		{
-			var a = document.createElement('a');
-			a.href = url_string;
-			url_string = a.href;
-		}
 
-		return url_string;
-	}
 
 })();

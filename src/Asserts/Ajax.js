@@ -174,7 +174,6 @@
 			defaults.error = local.error;
 
 			$.extend(defaults, options);
-
 			if (defaults.url.length !== 0 || defaults.handle.length !== 0) {
 				local.state.inProgress = true;
 				defaults.inProcess(local.state);
