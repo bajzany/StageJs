@@ -27,7 +27,7 @@
 			var form = this;
 
 			// INPUT LISTENER ON EVENTS
-			$(this).find(':input').each(function () {
+			$(form).find(':input').each(function () {
 				var input = this;
 				if ($.inArray($(this).prop('name'), Form.unusedField) < 0) {
 					local.addInputListeners(input)
@@ -35,7 +35,7 @@
 			});
 
 			// AJAX CHECK SUBMIT IF VALID SEND CLASSIC SUBMIT
-			$(this).find(':button[type=submit].ajaxValidation').each(function () {
+			$(form).find(':button[type=submit].ajax').each(function () {
 				var timeout;
 				$(this).on('click', function(e){
 					e.preventDefault();
@@ -48,12 +48,15 @@
 								type: 'POST',
 								url: $(form)[0].action,
 								data: $(form).serialize(),
+								onSuccess: function (data, ajax) {
+									var modalComponent = Stage.App.getComponent('Modal');
+									modalComponent.onSuccess(data, ajax)
+								}
 							});
 						}
 					},200);
 				});
 			});
-
 
 			Form.forms.push(form);
 		});

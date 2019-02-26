@@ -5,6 +5,7 @@
 		Listeners: {},
 		actionsAfterExecuteSnippets: {},
 		actionsOnAjax: {},
+		actionsOnSuccess: {},
 	}, local = {
 		state: {
 			customAjax: false
@@ -111,6 +112,23 @@
 	};
 
 	/**
+	 * @param name
+	 * @param action
+	 */
+	App.addActionsOnSuccess = function(name, action){
+
+		if(typeof App.actionsOnSuccess[name] !== "undefined"){
+			console.error("Action "+name+" exist");
+			return;
+		}
+		if(typeof action !== "function"){
+			console.error("TODO");
+			return;
+		}
+		App.actionsOnSuccess[name] = action;
+	};
+
+	/**
 	 * RUN CONTROL ACTION
 	 * @param controlName
 	 * @param action
@@ -134,6 +152,14 @@
 		}
 
 		control[actionName]();
+	};
+
+	/**
+	 * @param {string} name
+	 * @return {*}
+	 */
+	App.getComponent = function (name) {
+		return App.Components[name];
 	};
 
 	/**

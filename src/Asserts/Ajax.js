@@ -61,8 +61,17 @@
 		 * @param request
 		 */
 		local.success = function(data, message, request) {
+
+			if (data.redirect) {
+				document.location = data.redirect;
+			}
+
 			var ajax = this;
 			defaults.onSuccess(data, ajax);
+			// ACTIONS ON SUCCESS
+			$.each(defaults.actionsOnSuccess, function (name, action) {
+				action(data, ajax);
+			});
 
 			if (data.snippets)
 			{
@@ -87,7 +96,7 @@
 				local.executeSnippets();
 
 				// ACTIONS AFTER EXECUTE SNIPPETS
-				$.each(defaults.actionsAfterExecuteSnippets, function (name, action) {
+				$.each(defaults.actionsAfterExecuteSnippets, function (name, action){
 					action(the);
 				});
 
@@ -112,20 +121,7 @@
 
 			//TYPE MODAL
 			$.each(the.snippets.TYPE_MODAL.snippets, function (name, data) {
-				var res;
-				var source = $(document).find('#' + name);
-				var sourceModalContent = source.find('.modal-dialog');
-
-				if (sourceModalContent.length > 0) {
-					var snippetElement = $(data);
-					var modalContent = snippetElement.find('.modal-dialog');
-
-					res = sourceModalContent.html(modalContent);
-				} else {
-					res = source.html(data);
-				}
-
-				local.addExecutedSnippet(name, res);
+				local.addExecutedSnippet(name, $(data));
 			});
 
 			//TYPE ADD
@@ -165,6 +161,7 @@
 			defaults.success = local.success;
 			defaults.onAjax = [];
 			defaults.onSuccess = function(){};
+			defaults.actionsOnSuccess = [];
 			defaults.onError = function(){};
 			defaults.beforeExecuteSnippets = function (){};
 			defaults.afterExecuteSnippets = function (){};

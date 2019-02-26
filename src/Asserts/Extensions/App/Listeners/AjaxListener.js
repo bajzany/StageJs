@@ -9,26 +9,37 @@
 	 * @param element
 	 */
 	AjaxListener.init = function (App, element) {
+
 		the.loadAjaxElements(element, {
-			actionsAfterExecuteSnippets: [
-				function (Ajax){
-					$.each(App.actionsAfterExecuteSnippets, function (name, action) {
-						action(Ajax, element);
-					});
-				},
-				function(Ajax) {
-					$.each(Ajax.executedSnippets, function (name, element) {
-						AjaxListener.init(App, element)
-					});
-				},
-			],
 			onAjax: [
 				function (Ajax) {
 					$.each(App.actionsOnAjax, function (name, action) {
-						action(Ajax, element);
+						action(Ajax);
 					});
 				}
-			]
+			],
+			actionsOnSuccess: [
+				function (data) {
+					$.each(App.actionsOnSuccess, function (name, action) {
+						action(data);
+					});
+				}
+			],
+			actionsAfterExecuteSnippets: [
+				function (Ajax){
+					$.each(App.actionsAfterExecuteSnippets, function (name, action) {
+						$.each(Ajax.executedSnippets, function (name, el) {
+							action(Ajax, el);
+						});
+					});
+					// AjaxListener.init(App, Ajax.executedSnippets)
+					$.each(Ajax.executedSnippets, function (name, el) {
+						AjaxListener.init(App, el)
+					});
+
+				},
+			],
+
 		});
 	};
 
@@ -46,17 +57,7 @@
 
 		var ajaxClass = ajax.getConfig().ajax_class;
 
-		$(el ? el :document).find('a.'+ajaxClass+', button.'+ajaxClass).not('.confirm').on('click', function(e){
-			the.runAjaxFromElement($(this), defaultOption, e);
-		});
-
-		var types = [
-			'input[type=submit].'+ajaxClass,
-			'input[type=button].'+ajaxClass,
-			'button.'+ajaxClass
-		];
-
-		$(el ? el :document).find(types).not('.confirm').on('click', function(e){
+		$(el ? el :document).find('a.'+ajaxClass+', button.'+ajaxClass).not('.confirm').not(":button[type=submit]").on('click', function(e){
 			the.runAjaxFromElement($(this), defaultOption, e);
 		});
 

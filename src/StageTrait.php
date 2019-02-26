@@ -26,18 +26,13 @@ trait StageTrait
 		return $this->stageControl->create();
 	}
 
-	private function ajaxStageJS()
+	public function ajaxStageJS()
 	{
 		if ($this->isAjax()) {
 			if (!empty($this->notifications->getNotifications())) {
 				$this->redrawControl('notify');
 			}
-
 			$this->redrawControl('modal-Area');
-		}
-
-		if (!empty((array)$this->payload)) {
-			$this->sendPayload();
 		}
 	}
 
