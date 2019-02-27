@@ -31,7 +31,6 @@
 			if (search > -1) {
 				var source = $(document).find('#' + name);
 				var sourceModalContent = source.find('.modal-dialog');
-
 				if (sourceModalContent.length > 0) {
 					var snippetElement = $(snippetData);
 					data.snippets[name] = snippetElement;
@@ -46,6 +45,9 @@
 
 	local.getModalData = function (id) {
 		var selectedModal;
+		if (!local.data) {
+			return selectedModal;
+		}
 		$.each(local.data, function (i, modal) {
 			if (i === id) {
 				selectedModal = modal;
@@ -56,6 +58,9 @@
 	};
 
 	Modal.synchronize = function () {
+		if (!local.data) {
+			return;
+		}
 		$.each(local.data, function (i, modal) {
 			if (modal['close']){
 				$('#' + modal['modalId']).modal("hide")
