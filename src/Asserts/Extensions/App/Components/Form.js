@@ -42,6 +42,7 @@
 					local.removeErrors($(form));
 					local.validateForm($(form));
 					clearTimeout(timeout);
+
 					timeout = setTimeout(function(){
 						if (!local.hasHtmlErrors($(form))) {
 							new Stage.Ajax({
@@ -51,7 +52,15 @@
 								onSuccess: function (data, ajax) {
 									var modalComponent = Stage.App.getComponent('Modal');
 									modalComponent.onSuccess(data, ajax)
-								}
+								},
+								actionsAfterExecuteSnippets: [
+									function (Ajax) {
+										var AjaxListener = Stage.App.getListener('AjaxListener');
+										$.each(Ajax.executedSnippets, function (name, el) {
+											AjaxListener.init(Stage.App, el)
+										});
+									}
+								]
 							});
 						}
 					},200);

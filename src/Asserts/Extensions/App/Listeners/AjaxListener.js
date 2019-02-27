@@ -9,7 +9,6 @@
 	 * @param element
 	 */
 	AjaxListener.init = function (App, element) {
-
 		the.loadAjaxElements(element, {
 			onAjax: [
 				function (Ajax) {

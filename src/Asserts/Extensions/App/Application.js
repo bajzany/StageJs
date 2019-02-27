@@ -60,6 +60,11 @@
 		App.Listeners[name] = listener;
 	};
 
+	
+	App.getListener = function (name) {
+		return App.Listeners[name];
+	}
+
 	/**
 	 * @param name
 	 * @param component
