@@ -32,9 +32,18 @@
 				var source = $(document).find('#' + name);
 				var sourceModalContent = source.find('.modal-dialog');
 				if (sourceModalContent.length > 0) {
+
 					var snippetElement = $(snippetData);
+					var modalSnippetId = snippetElement.attr('id');
+					var modalSettings = local.getModalData(modalSnippetId);
+
+					if (modalSettings && modalSettings.close) {
+						data.snippets[name] = '';
+						return;
+					}
+
+					source.append(snippetElement);
 					data.snippets[name] = snippetElement;
-					source.append(snippetElement)
 				} else {
 					data.snippets[name] = source.html(snippetData);
 				}
