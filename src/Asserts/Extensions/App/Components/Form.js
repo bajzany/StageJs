@@ -38,6 +38,9 @@
 			$(form).find(':button[type=submit].ajax').each(function () {
 				var timeout;
 				$(this).on('click', function(e){
+
+					var target = this;
+
 					e.preventDefault();
 					local.removeErrors($(form));
 					local.validateForm($(form));
@@ -45,10 +48,13 @@
 
 					timeout = setTimeout(function(){
 						if (!local.hasHtmlErrors($(form))) {
+							var formData = $(form).serialize();
 							new Stage.Ajax({
 								type: 'POST',
 								url: $(form)[0].action,
-								data: $(form).serialize(),
+
+								/*** TARGET ATTR FOR ON CLICK BUTTON FROM NETTE FORM*/
+								data: formData + '&' + target.getAttribute('name'),
 								onSuccess: function (data, ajax) {
 									var modalComponent = Stage.App.getComponent('Modal');
 									modalComponent.onSuccess(data, ajax)
