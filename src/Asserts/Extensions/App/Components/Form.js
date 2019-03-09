@@ -220,12 +220,22 @@
 	local.validateField = function (form, field, errors) {
 		var input = form.find('input[name='+ field +']');
 		var div = input.closest("div");
+
 		div.addClass(Form.divErrorClass);
 		$.each(errors, function (i, error) {
 			var spanError = document.createElement('span');
 			spanError.setAttribute('class', Form.spanErrorClass);
 			spanError.innerHTML = error;
-			input.after($(spanError));
+			var exist = false;
+			$.each(input.parent().find('.help-block'), function (i, block) {
+				if ($(block).html() == $(spanError).html()) {
+					exist = true;
+				}
+			});
+
+			if (!exist) {
+				input.after($(spanError));
+			}
 		});
 	}
 
