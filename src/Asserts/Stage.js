@@ -3,6 +3,7 @@
     window.Stage = Stage;
     Stage.version = '1.0';
     Stage.extensions = {};
+    Stage.components = {};
     Stage.Parameters = {};
 
     /**
@@ -29,6 +30,33 @@
         Stage.extensions[name] = extension;
     };
 
+    /**
+     * @param name
+     * @param component
+     */
+    Stage.addComponent = function(name, component){
+
+        if(typeof Stage.extensions[name] !== "undefined"){
+            console.error("Component "+name+" exist");
+            return;
+        }
+        if(typeof component !== "object"){
+            console.error("TODO");
+            return;
+        }
+        Stage.components[name] = component;
+    };
+
+    Stage.getComponentByName = function (name) {
+
+        if(typeof Stage.components[name] === "undefined"){
+            console.error("Component "+name+" doesn't exist");
+            return;
+        }
+
+        return Stage.components[name];
+    };
+
     Stage.getExtensionByName = function (name) {
 
         if(typeof Stage.extensions[name] === "undefined"){
@@ -49,6 +77,12 @@
                 extension.onBuild(Stage);
             }
         });
+
+        $.each(Stage.components, function (i, component) {
+            if(typeof component.onBuild === "function"){
+                component.onBuild(Stage);
+            }
+        });
     };
 
     /**
@@ -58,6 +92,12 @@
         $.each(Stage.extensions, function (i, extension) {
             if(typeof extension.init === "function"){
                 extension.init(Stage);
+            }
+        });
+
+        $.each(Stage.components, function (i, component) {
+            if(typeof component.init === "function"){
+                component.init(Stage);
             }
         });
     };
@@ -100,5 +140,4 @@
     }
 
 })();
-
 
