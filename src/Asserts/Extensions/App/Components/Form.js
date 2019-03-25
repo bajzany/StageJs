@@ -22,7 +22,6 @@
 
 
 	Form.init = function(App, el) {
-
 		$(el ? el :document).find("form").each(function() {
 			var form = this;
 
@@ -33,6 +32,7 @@
 					local.addInputListeners(input)
 				}
 			});
+
 
 			// AJAX CHECK SUBMIT IF VALID SEND CLASSIC SUBMIT
 			$(form).find(':button[type=submit].ajax').each(function () {
@@ -48,13 +48,16 @@
 
 					timeout = setTimeout(function(){
 						if (!local.hasHtmlErrors($(form))) {
-							var formData = $(form).serialize();
+							// var formData = $(form).serialize();
+
+							var formData = new FormData($(form)[0]);
+
 							new Stage.Ajax({
 								type: 'POST',
 								url: $(form)[0].action,
-
-								/*** TARGET ATTR FOR ON CLICK BUTTON FROM NETTE FORM*/
-								data: formData + '&' + target.getAttribute('name'),
+								contentType: false,
+								processData : false,
+								data: formData,
 								onSuccess: function (data, ajax) {
 									var modalComponent = Stage.App.getComponent('Modal');
 									modalComponent.onSuccess(data, ajax)
@@ -62,6 +65,15 @@
 								actionsAfterExecuteSnippets: [
 									function (Ajax) {
 										var AjaxListener = Stage.App.getListener('AjaxListener');
+
+										$.each(Stage.App.actionsAfterExecuteSnippets, function (name, action) {
+											if (name !== 'Modal') {
+												$.each(Ajax.executedSnippets, function (name, el) {
+													action(Ajax, el);
+												});
+											}
+										});
+
 										$.each(Ajax.executedSnippets, function (name, el) {
 											AjaxListener.init(Stage.App, el)
 										});
@@ -218,6 +230,7 @@
 	 * @param {[]} errors
 	 */
 	local.validateField = function (form, field, errors) {
+
 		var input = form.find('input[name='+ field +']');
 		var div = input.closest("div");
 

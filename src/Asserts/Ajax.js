@@ -62,6 +62,8 @@
 		 */
 		local.success = function(data, message, request) {
 
+			// console.log('data',data)
+
 			if (data.redirect) {
 				document.location = data.redirect;
 			}
@@ -72,6 +74,8 @@
 			$.each(defaults.actionsOnSuccess, function (name, action) {
 				action(data, ajax);
 			});
+
+
 
 			if (data.snippets)
 			{
@@ -95,10 +99,14 @@
 				defaults.beforeExecuteSnippets(the.snippets);
 				local.executeSnippets();
 
+
+
 				// ACTIONS AFTER EXECUTE SNIPPETS
 				$.each(defaults.actionsAfterExecuteSnippets, function (name, action){
 					action(the);
 				});
+
+
 
 				defaults.afterExecuteSnippets(the.executedSnippets);
 			}
@@ -156,6 +164,9 @@
 			defaults.dataType = 'json';
 			defaults.handle = '';
 			defaults.url = '';
+			// defaults.form = true;
+			// defaults.contentType= false;
+			// defaults.processData= false;
 			defaults.data = false;
 			defaults.async = true;
 			defaults.success = local.success;

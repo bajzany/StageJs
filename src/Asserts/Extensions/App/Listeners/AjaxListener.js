@@ -26,8 +26,12 @@
 			],
 			actionsAfterExecuteSnippets: [
 				function (Ajax){
+					// console.log(Ajax)
+
 					$.each(App.actionsAfterExecuteSnippets, function (name, action) {
+
 						$.each(Ajax.executedSnippets, function (name, el) {
+
 							action(Ajax, el);
 						});
 					});
