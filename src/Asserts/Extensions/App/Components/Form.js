@@ -22,6 +22,7 @@
 
 
 	Form.init = function(App, el) {
+
 		$(el ? el :document).find("form").each(function() {
 			var form = this;
 
@@ -32,7 +33,6 @@
 					local.addInputListeners(input)
 				}
 			});
-
 
 			// AJAX CHECK SUBMIT IF VALID SEND CLASSIC SUBMIT
 			$(form).find(':button[type=submit].ajax').each(function () {
@@ -55,7 +55,7 @@
 								url: $(form)[0].action,
 								contentType: false,
 								processData : false,
-								data: formData ,
+								data: formData,
 								onSuccess: function (data, ajax) {
 									var modalComponent = Stage.App.getComponent('Modal');
 									modalComponent.onSuccess(data, ajax)
@@ -228,7 +228,6 @@
 	 * @param {[]} errors
 	 */
 	local.validateField = function (form, field, errors) {
-
 		var input = form.find('input[name='+ field +']');
 		var div = input.closest("div");
 
