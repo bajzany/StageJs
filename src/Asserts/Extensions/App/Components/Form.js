@@ -201,6 +201,17 @@
 
 					var htmlForm = $('form[id = '+form.id+']');
 
+					// RENDER FORM ERRORS
+					htmlForm.find(".alert.alert-danger").remove();
+					htmlForm.find(".alert.alert-danger").remove();
+					if (typeof form.errors !== "undefined") {
+						$.each(form.errors, function (i, error) {
+							var errHtml = $("<div>").addClass("alert alert-danger").attr("role", "alert").html(error);
+							console.log(errHtml);
+							htmlForm.prepend(errHtml);
+						});
+					}
+
 					// VALIDATE ALL FIELDS
 					$.each(form.fields, function (i, field) {
 
