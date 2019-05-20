@@ -207,7 +207,6 @@
 					if (typeof form.errors !== "undefined") {
 						$.each(form.errors, function (i, error) {
 							var errHtml = $("<div>").addClass("alert alert-danger").attr("role", "alert").html(error);
-							console.log(errHtml);
 							htmlForm.prepend(errHtml);
 						});
 					}
@@ -239,7 +238,7 @@
 	 * @param {[]} errors
 	 */
 	local.validateField = function (form, field, errors) {
-		var input = form.find('input[name='+ field +']');
+		var input = form.find('input[name='+ field +'], select[name='+ field +']').not('input[type="checkbox"]');
 		var div = input.closest("div");
 
 		div.addClass(Form.divErrorClass);
