@@ -1,15 +1,14 @@
-(function() {
+(function () {
 	var AjaxListener = {};
 	var the = this;
-
+	this.timeout = "undefined";
 	Stage.App.addListener('AjaxListener', AjaxListener);
 
 	/**
 	 * @param App
-	 * @param element
 	 */
-	AjaxListener.init = function (App, element) {
-		the.loadAjaxElements(element, {
+	AjaxListener.init = function (App) {
+		var defaultOption = {
 			onAjax: [
 				function (Ajax) {
 					$.each(App.actionsOnAjax, function (name, action) {
@@ -25,43 +24,27 @@
 				}
 			],
 			actionsAfterExecuteSnippets: [
-				function (Ajax){
+				function (Ajax) {
 					$.each(App.actionsAfterExecuteSnippets, function (name, action) {
 						$.each(Ajax.executedSnippets, function (name, el) {
 							action(Ajax, el);
 						});
 					});
-					// AjaxListener.init(App, Ajax.executedSnippets)
-					$.each(Ajax.executedSnippets, function (name, el) {
-						AjaxListener.init(App, el)
-					});
+				}
+			]
+		};
 
-				},
-			],
-
+		$(document).on('click', 'a.ajax,button.ajax', function (e) {
+			if ($(this).hasClass("confirm") || ($(this).attr("type") == "submit" && $(this).is("button"))) {
+				return
+			}
+			e.preventDefault();
+			clearTimeout(the.timeout);
+			var element = $(this);
+			the.timeout = setTimeout(function () {
+				the.runAjaxFromElement(element, defaultOption, e);
+			}, 50)
 		});
-	};
-
-	/**
-	 * @param el
-	 * @param option
-	 * @return {*|Window.App.Ajax|Window.App.Ajax}
-	 */
-	this.loadAjaxElements = function (el, option) {
-
-		var defaultOption = {};
-
-		$.extend(defaultOption, option);
-		var ajax = new Stage.Ajax();
-
-		var ajaxClass = ajax.getConfig().ajax_class;
-
-		$(el ? el :document).find('a.'+ajaxClass+', button.'+ajaxClass).not('.confirm').not(":button[type=submit]").on('click', function(e){
-			the.runAjaxFromElement($(this), defaultOption, e);
-		});
-
-		return ajax;
-
 	};
 
 	/**
@@ -81,15 +64,14 @@
 	 * @return {URL|void}
 	 */
 	this.createUrlFromElement = function (element) {
-
 		var url_string = '';
-		if( element instanceof jQuery){
-			if(element.length > 0 && element.is('a')){
+		if (element instanceof jQuery) {
+			if (element.length > 0 && element.is('a')) {
 				url_string = element.attr('href');
-			}else{
-				return console.error('jquery object is emty or not select <A> link');
+			} else {
+				return console.error('jquery object is empty or not select <A> link');
 			}
-		}else if(!element){
+		} else if (!element) {
 			url_string = document.URL;
 		}
 
@@ -97,7 +79,4 @@
 
 		return new URL(url_string);
 	};
-
-
-
 })();

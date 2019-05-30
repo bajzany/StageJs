@@ -1,4 +1,4 @@
-(function() {
+(function () {
 	var Modal = {};
 	var the = this;
 	var local = {
@@ -21,13 +21,13 @@
 		Modal.synchronize();
 	};
 
-	Modal.init = function(App) {
+	Modal.init = function (App) {
 		the.initializeModal();
 	};
 
 	Modal.render = function (data) {
 		$.each(data.snippets, function (name, snippetData) {
-			var search = name.search('snippet--' + 'modal');
+			var search = name.search('snippet--modal');
 			if (search > -1) {
 				var source = $(document).find('#' + name);
 				var sourceModalContent = source.find('.modal-dialog');
@@ -41,9 +41,13 @@
 						data.snippets[name] = '';
 						return;
 					}
-
-					source.append(snippetElement);
-					data.snippets[name] = snippetElement;
+					var replaceElement = source.find(".modal#" + modalSnippetId).find(".modal-dialog");
+					if (replaceElement.length > 0) {
+						console.log(snippetElement);
+						replaceElement.html(snippetElement.find(".modal-dialog"));
+					} else {
+						data.snippets[name] = source.append(snippetElement);
+					}
 				} else {
 					data.snippets[name] = source.html(snippetData);
 				}
@@ -71,7 +75,7 @@
 			return;
 		}
 		$.each(local.data, function (i, modal) {
-			if (modal['close']){
+			if (modal['close']) {
 				$('#' + modal['modalId']).modal("hide")
 			}
 		})
