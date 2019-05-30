@@ -1,6 +1,5 @@
-(function() {
+(function () {
 	Stage.Ajax = function (options, _call_el) {
-
 		this.Config = {
 			ajax_class: 'ajax',
 			ajax_load_timeout: 300,
@@ -34,8 +33,7 @@
 		/**
 		 * @param state
 		 */
-		local.inProcess = function(state) {
-
+		local.inProcess = function (state) {
 			// var body = $("body");
 			// var loader = body.find('#loader');
 			//
@@ -60,8 +58,7 @@
 		 * @param message
 		 * @param request
 		 */
-		local.success = function(data, message, request) {
-
+		local.success = function (data, message, request) {
 			if (data.redirect) {
 				document.location = data.redirect;
 			}
@@ -73,10 +70,9 @@
 				action(data, ajax);
 			});
 
-			if (data.snippets)
-			{
+			if (data.snippets) {
 				defaults.beforeRedraw(data.snippets);
-				$.each(data.snippets, function(name, data){
+				$.each(data.snippets, function (name, data) {
 					var find = false;
 					$.each(the.snippets, function (type, config) {
 						var search = name.search('snippet--' + config.snippetPrefix);
@@ -95,14 +91,10 @@
 				defaults.beforeExecuteSnippets(the.snippets);
 				local.executeSnippets();
 
-
-
 				// ACTIONS AFTER EXECUTE SNIPPETS
-				$.each(defaults.actionsAfterExecuteSnippets, function (name, action){
+				$.each(defaults.actionsAfterExecuteSnippets, function (name, action) {
 					action(the);
 				});
-
-
 
 				defaults.afterExecuteSnippets(the.executedSnippets);
 			}
@@ -115,8 +107,7 @@
 		/**
 		 * EXECUTE SNIPPETS (RENDER)
 		 */
-		local.executeSnippets = function() {
-
+		local.executeSnippets = function () {
 			//TYPE DEFAULT
 			$.each(the.snippets.TYPE_DEFAULT.snippets, function (name, data) {
 				var res = $(document).find('#' + name).html(data);
@@ -139,7 +130,7 @@
 		 * @param {string} name
 		 * @param {jQuery} data
 		 */
-		local.addExecutedSnippet = function(name, data) {
+		local.addExecutedSnippet = function (name, data) {
 			the.executedSnippets[name] = data
 		};
 
@@ -148,14 +139,14 @@
 		 * @param ajaxOptions
 		 * @param thrownError
 		 */
-		local.error = function(request, ajaxOptions, thrownError){
+		local.error = function (request, ajaxOptions, thrownError) {
 			defaults.onError(request, ajaxOptions, thrownError);
 			console.error('AJAX - Element ', _call_el, ' has: ', ajaxOptions);
 			local.state.inProgress = false;
 			defaults.inProcess(local.state);
 		};
 
-		(function(options) {
+		(function (options) {
 			defaults.type = 'GET';
 			defaults.dataType = 'json';
 			defaults.handle = '';
@@ -167,9 +158,9 @@
 			defaults.async = true;
 			defaults.success = local.success;
 			defaults.onAjax = [];
-			defaults.onSuccess = function(){};
+			defaults.onSuccess = function (){};
 			defaults.actionsOnSuccess = [];
-			defaults.onError = function(){};
+			defaults.onError = function (){};
 			defaults.beforeExecuteSnippets = function (){};
 			defaults.afterExecuteSnippets = function (){};
 			defaults.beforeRedraw = function (){};

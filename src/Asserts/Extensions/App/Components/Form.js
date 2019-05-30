@@ -1,4 +1,4 @@
-(function() {
+(function () {
 	var Form = {
 		forms: [],
 		unusedField: [
@@ -17,13 +17,11 @@
 		}
 	};
 
-	// Stage.Form = Form;
 	Stage.App.addComponent('Form', Form);
 
 
-	Form.init = function(App, el) {
-
-		$(el ? el :document).find("form").not(".novalidate").each(function() {
+	Form.init = function (App, el) {
+		$(el ? el : document).find("form").not(".novalidate").each(function () {
 			var form = this;
 
 			// INPUT LISTENER ON EVENTS
@@ -37,8 +35,7 @@
 			// AJAX CHECK SUBMIT IF VALID SEND CLASSIC SUBMIT
 			$(form).find(':button[type=submit].ajax').each(function () {
 				var timeout;
-				$(this).on('click', function(e){
-
+				$(this).on('click', function (e) {
 					var target = this;
 
 					e.preventDefault();
@@ -46,7 +43,7 @@
 					local.validateForm($(form));
 					clearTimeout(timeout);
 
-					timeout = setTimeout(function(){
+					timeout = setTimeout(function () {
 						if (!local.hasHtmlErrors($(form))) {
 							var formData = new FormData($(form)[0]);
 							formData.append(target.getAttribute('name'),'');
@@ -62,18 +59,12 @@
 								},
 								actionsAfterExecuteSnippets: [
 									function (Ajax) {
-										var AjaxListener = Stage.App.getListener('AjaxListener');
-
 										$.each(Stage.App.actionsAfterExecuteSnippets, function (name, action) {
 											if (name !== 'Modal') {
 												$.each(Ajax.executedSnippets, function (name, el) {
 													action(Ajax, el);
 												});
 											}
-										});
-
-										$.each(Ajax.executedSnippets, function (name, el) {
-											AjaxListener.init(Stage.App, el)
 										});
 									}
 								]
@@ -106,14 +97,10 @@
 			var form = $(this).closest("form");
 			if (local.hasHtmlErrors(form, fieldName)) {
 				clearTimeout(timeout);
-				timeout = setTimeout(function(){
-
+				timeout = setTimeout(function () {
 					// FOR ONLY ONE FIELD IN VALIDATION
 					local.removeErrors(form, fieldName);
 					local.validateForm(form, fieldName);
-
-					// local.removeErrors(form);
-					// local.validateForm(form);
 
 					local.state.validated = true;
 				},1000);
@@ -123,19 +110,12 @@
 		// OWN EVENTS
 		$.each(Form.validateEvents ,function (i, event) {
 			$(element).on(event, function () {
-				// if (local.state.validated) {
-				// 	return;
-				// }
-
 				var form = $(this).closest("form");
 
 				// FOR ONLY ONE FIELD IN VALIDATION
 				var fieldName = $(this)[0].name;
 				local.removeErrors(form, fieldName);
 				local.validateForm(form, fieldName);
-
-				// local.removeErrors(form);
-				// local.validateForm(form);
 
 				local.state.validated = true;
 			})
@@ -146,9 +126,9 @@
 	 * @param {jQuery} form
 	 * @param {string} fieldName
 	 */
-	local.hasHtmlErrors = function(form, fieldName) {
+	local.hasHtmlErrors = function (form, fieldName) {
 		if (fieldName) {
-			var input = form.find('input[name='+ fieldName +']');
+			var input = form.find('input[name=' + fieldName + ']');
 			var div = input.closest('.' + Form.divErrorClass);
 			return div.length > 0;
 		}
@@ -161,9 +141,8 @@
 	 * @param {string} fieldName
 	 */
 	local.removeErrors = function (form, fieldName) {
-
 		if (fieldName) {
-			var input = form.find('input[name='+ fieldName +']');
+			var input = form.find('input[name=' + fieldName + ']');
 			var div = input.closest('.' + Form.divErrorClass);
 			var span = div.find('span.' + Form.spanErrorClass);
 			$(div).removeClass(Form.divErrorClass);
@@ -198,11 +177,9 @@
 				}
 
 				$.each(forms, function (i, form) {
-
-					var htmlForm = $('form[id = '+form.id+']');
+					var htmlForm = $('form[id = ' + form.id + ']');
 
 					// RENDER FORM ERRORS
-					htmlForm.find(".alert.alert-danger").remove();
 					htmlForm.find(".alert.alert-danger").remove();
 					if (typeof form.errors !== "undefined") {
 						$.each(form.errors, function (i, error) {
@@ -213,7 +190,6 @@
 
 					// VALIDATE ALL FIELDS
 					$.each(form.fields, function (i, field) {
-
 						var fieldName = field.htmlName;
 						var errors = field.errors;
 
@@ -238,7 +214,7 @@
 	 * @param {[]} errors
 	 */
 	local.validateField = function (form, field, errors) {
-		var input = form.find('input[name='+ field +'], select[name='+ field +']').not('input[type="checkbox"]');
+		var input = form.find('input[name=' + field + '], select[name=' + field + ']').not('input[type="checkbox"]');
 		var div = input.closest("div");
 
 		div.addClass(Form.divErrorClass);
