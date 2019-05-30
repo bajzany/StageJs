@@ -43,7 +43,6 @@
 					}
 					var replaceElement = source.find(".modal#" + modalSnippetId).find(".modal-dialog");
 					if (replaceElement.length > 0) {
-						console.log(snippetElement);
 						replaceElement.html(snippetElement.find(".modal-dialog"));
 					} else {
 						data.snippets[name] = source.append(snippetElement);
