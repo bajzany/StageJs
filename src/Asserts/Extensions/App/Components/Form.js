@@ -21,7 +21,7 @@
 
 
 	Form.init = function (App, el) {
-		$(el ? el : document).find("form").not(".novalidate").each(function () {
+		$(el ? el : document).find("form").each(function () {
 			var form = this;
 
 			// INPUT LISTENER ON EVENTS
@@ -166,6 +166,11 @@
 	 * @param {string} selectedFieldName
 	 */
 	local.validateForm = function (form, selectedFieldName) {
+
+		if ($(form).hasClass("novalidate")) {
+			return;
+		}
+
 		new Stage.Ajax({
 			type: 'POST',
 			url: form[0].action ,
