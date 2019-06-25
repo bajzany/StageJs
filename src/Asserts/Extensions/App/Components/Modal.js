@@ -18,7 +18,9 @@
 	Modal.onSuccess = function (data) {
 		local.data = data.modal;
 		Modal.render(data);
-		Modal.synchronize();
+		setTimeout(function () {
+			Modal.synchronize();
+		}, 150);
 	};
 
 	Modal.init = function (App) {
